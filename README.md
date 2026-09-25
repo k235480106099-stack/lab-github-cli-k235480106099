@@ -1,13 +1,14 @@
-\# Bài tập Git
+# Bài tập Git
 
-\## Người thực hiện
+- **Người thực hiện:** Phạm Thanh Sơn
+- **MSSV:** 235480106099
+- **Deadline:** 28/09/2026 23:59
 
-Phạm Thanh Sơn - MSSV: k235480106099
+---
 
-\## Deadline
+## Tìm hiểu thuật toán mã hóa hiện đại DES và AES
 
-28/09/2026 23:59
-
+### 1. Thuật toán mã hóa DES (Data Encryption Standard)
 
 
 # Tìm hiểu thuật toán mã hóa hiện đại DES và AES
