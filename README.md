@@ -73,9 +73,11 @@ $$\text{AddRoundKey} \rightarrow \text{InvShiftRows} \rightarrow \text{InvSubByt
 ### Yêu cầu cài đặt thư viện
 ```bash
 pip install pycryptodome
+```
 
 **Chương trình mã hóa và giải mã văn bản bằng AES (chế độ CBC)**
-'''bash
+
+```bash
 import base64
 import os
 from Crypto.Cipher import AES
@@ -194,3 +196,52 @@ b5. **Tính số mũ bí mật $d$ (Private Exponent):**
 4.2. **Mã hóa & Giải mã bản rõ $M = 65$:**
    * **Mã hóa:** $C = 65^{17} \pmod{3233} = 2790$.
    * **Giải mã:** $M = 2790^{2753} \pmod{3233} = 65$ *(Trùng khớp với bản gốc)*.
+
+### c. Trình bày các mô hình áp dụng thuật toán RSA
+
+Dựa vào việc sử dụng khóa nào để mã hóa, RSA được ứng dụng trong 3 mô hình chính:
+
+**1. Xác thực người nhận (Đảm bảo tính Bí mật - Confidentiality)**
+* **Nguyên lý:** Người gửi (Alice) sử dụng **Khóa công khai (Public Key)** của người nhận (Bob) để mã hóa thông điệp.
+* **Giải mã:** Chỉ Bob, người sở hữu **Khóa bí mật (Private Key)** tương ứng mới có thể giải mã để đọc được thông điệp.
+* **Mục đích:** Đảm bảo tính bảo mật, chống nghe lén. Chỉ có đích danh người nhận mới đọc được nội dung.
+
+**2. Xác thực người gửi (Chữ ký số - Authentication / Digital Signature)**
+* **Nguyên lý:** Người gửi (Alice) dùng **Khóa bí mật (Private Key)** của chính mình để "mã hóa" (ký) vào thông điệp hoặc mã băm của thông điệp.
+* **Kiểm tra:** Bất kỳ ai nhận được cũng có thể dùng **Khóa công khai (Public Key)** của Alice để giải mã (xác minh chữ ký).
+* **Mục đích:** Khẳng định chắc chắn thông điệp này xuất phát từ Alice (xác thực nguồn gốc) và không bị chỉnh sửa trên đường truyền (tính toàn vẹn).
+
+**3. Xác thực cả hai (Kết hợp Bí mật và Xác thực)**
+* **Nguyên lý:** Kết hợp hai lớp mã hóa. 
+  * *Bước 1:* Alice ký thông điệp bằng **Private Key của Alice**.
+  * *Bước 2:* Alice mã hóa tiếp gói tin đó bằng **Public Key của Bob**.
+* **Giải mã:** Bob dùng **Private Key của Bob** để mở lớp mã hóa ngoài, sau đó dùng **Public Key của Alice** để kiểm tra lớp bên trong.
+* **Mục đích:** Đáp ứng đồng thời yêu cầu bảo mật tuyệt đối và xác thực nguồn gốc an toàn.
+
+---
+
+### d. So sánh thời gian mã hóa/giải mã của RSA với AES
+
+| Tiêu chí | Thuật toán AES (Đối xứng) | Thuật toán RSA (Bất đối xứng) |
+| :--- | :--- | :--- |
+| **Bản chất toán học** | Dựa trên các phép toán dịch bit, ma trận, XOR (hoạt động cực nhanh trên vi xử lý). | Dựa trên toán học số nguyên cực lớn, tính lũy thừa theo modulo. |
+| **Thời gian mã hóa/giải mã**| **Rất nhanh**, tốn ít tài nguyên phần cứng. | **Rất chậm** (thời gian xử lý chậm hơn AES từ 100 đến 1000 lần). |
+| **Mục đích sử dụng** | Phù hợp để mã hóa khối lượng dữ liệu lớn (file, video, database...). | Chỉ dùng mã hóa lượng dữ liệu rất nhỏ (khóa AES, chữ ký số). |
+
+---
+
+### e. Mô hình kết hợp sức mạnh của RSA và AES (Hybrid Encryption)
+
+Thuật toán AES mã hóa nhanh nhưng gặp khó khăn khi gửi khóa bí mật qua mạng internet (dễ bị bắt trộm khóa). RSA giải quyết được việc chia sẻ khóa an toàn nhưng lại quá chậm để mã hóa file. Do đó, trong thực tế (như giao thức HTTPS, SSL/TLS), người ta luôn kết hợp điểm mạnh của cả hai.
+
+#### 1. Nguyên lý hoạt động của Mô hình mã hóa lai (Hybrid)
+
+##### 1.1. Quá trình mã hóa (Phía người gửi)
+1. **Sinh khóa phiên (Session Key):** Phần mềm của người gửi tự động tạo ra một khóa bí mật AES dùng một lần (ngẫu nhiên).
+2. **Mã hóa dữ liệu lớn:** Sử dụng khóa AES này để mã hóa toàn bộ dữ liệu, file đính kèm (vì AES cực kỳ nhanh).
+3. **Mã hóa khóa AES:** Sử dụng Khóa công khai (Public Key) RSA của người nhận để mã hóa chính cái "khóa AES" vừa sinh ra.
+4. **Đóng gói và gửi:** Gửi qua mạng cả cụm gồm: `[Dữ liệu đã mã hóa bằng AES]` + `[Khóa AES đã được mã hóa bằng RSA]`.
+
+##### 1.2. Quá trình giải mã (Phía người nhận)
+1. **Giải cứu khóa AES:** Người nhận dùng Khóa bí mật (Private Key) RSA của mình để mở khóa `[Khóa AES đã được mã hóa bằng RSA]`, từ đó khôi phục lại được "Khóa bí mật AES".
+2. **Mở khóa dữ liệu:** Dùng khóa AES vừa lấy được ở trên để giải mã `[Dữ liệu đã mã hóa bằng AES]`, thu được nội dung bản rõ ban đầu với tốc độ cao.
