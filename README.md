@@ -128,6 +128,6 @@ if __name__ == '__main__':
   # Giải mã
   decrypted = aes.decrypt(encrypted)
   print(f'Bản giải mã    : {decrypted}')
-'''
+```
 
-![<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/fea26049-9291-4b72-9320-0ad528f08876" />](ket-qua.png)
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/fea26049-9291-4b72-9320-0ad528f08876" />
