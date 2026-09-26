@@ -251,4 +251,107 @@ Thuật toán AES mã hóa nhanh nhưng gặp khó khăn khi gửi khóa bí m�
 
 ## Bài tập 1:
 
+## 1. Các công cụ giả lập và ảo hóa Linux OS trên Windows
+
+Để chạy hệ điều hành Linux trên môi trường máy chủ (host) là Windows, chúng ta có 4 công cụ phổ biến nhất hiện nay, mỗi công cụ có cơ chế hoạt động và đối tượng sử dụng khác nhau.
+
+### 1.1. WSL (Windows Subsystem for Linux)
+* **Khái niệm:** Là một tính năng tích hợp sẵn của Microsoft cho phép chạy môi trường Linux nguyên bản trực tiếp trên Windows mà không cần khởi động máy ảo truyền thống. WSL 2 hiện nay sử dụng một nhân (Kernel) Linux thực sự.
+* **Ưu điểm:**
+  * Khởi động cực kỳ nhanh (gần như tức thì).
+  * Tiêu tốn rất ít tài nguyên phần cứng (RAM, CPU) so với máy ảo.
+  * Tích hợp hoàn hảo với hệ thống file của Windows (có thể mở file Linux bằng VS Code trên Windows dễ dàng).
+* **Nhược điểm:** Mặc định chỉ dùng giao diện dòng lệnh (CLI). Việc giả lập giao diện đồ họa (GUI) dù có hỗ trợ (qua WSLg) nhưng không trọn vẹn và mượt mà như máy ảo thật.
+* **Phù hợp cho:** Lập trình viên, kỹ sư phần mềm chỉ cần môi trường dòng lệnh Linux để code, chạy Docker hoặc deploy web.
+
+### 1.2. VMware (VMware Workstation / Player)
+* **Khái niệm:** Là phần mềm ảo hóa (Type 2 Hypervisor) chuyên nghiệp và lâu đời, cho phép tạo một "máy tính ảo" hoàn chỉnh nằm bên trong máy tính thật.
+* **Ưu điểm:**
+  * Hiệu suất tối ưu cực tốt, đặc biệt là xử lý đồ họa (GUI) của Linux rất mượt mà.
+  * Tính năng **Snapshot** mạnh mẽ (lưu lại trạng thái máy ảo để khôi phục nhanh khi hệ thống bị lỗi).
+  * Khả năng giả lập mạng (NAT, Bridge) rất ổn định và chuyên sâu.
+* **Nhược điểm:** Tiêu tốn nhiều tài nguyên của máy thật (phải cấp phát RAM và Ổ cứng cố định). Bản Workstation Pro yêu cầu trả phí (dù bản Player miễn phí).
+* **Phù hợp cho:** Người dùng muốn trải nghiệm trọn vẹn giao diện Desktop của Linux (Ubuntu, Kali Linux...), sinh viên học quản trị mạng, an toàn thông tin.
+
+### 1.3. VirtualBox (Oracle)
+* **Khái niệm:** Tương tự như VMware, VirtualBox là phần mềm ảo hóa máy tính (Type 2) nhưng là nền tảng mã nguồn mở.
+* **Ưu điểm:**
+  * Hoàn toàn **miễn phí** 100% cho mọi mục đích sử dụng.
+  * Hỗ trợ đa nền tảng, cài đặt dễ dàng, giao diện thân thiện với người mới.
+  * Cộng đồng sử dụng lớn, dễ dàng tìm kiếm hướng dẫn sửa lỗi trên mạng.
+* **Nhược điểm:** Hiệu năng đôi khi không mượt mà bằng VMware, đặc biệt ở khả năng xử lý đồ họa 3D và các tính năng mở rộng thường hay gặp lỗi vặt.
+* **Phù hợp cho:** Sinh viên, người mới bắt đầu học hệ điều hành Linux cần một máy ảo miễn phí, dễ dùng để vọc vạch.
+
+### 1.4. Hyper-V
+* **Khái niệm:** Là trình ảo hóa lõi cấp thấp (Type 1 Hypervisor) do chính Microsoft phát triển, được tích hợp sâu vào hệ điều hành Windows.
+* **Ưu điểm:**
+  * Chạy gần sát với phần cứng vật lý nên mang lại hiệu năng cao và độ trễ thấp.
+  * Miễn phí và có sẵn trên Windows, không cần cài thêm phần mềm của bên thứ 3.
+* **Nhược điểm:** 
+  * Chỉ có mặt trên các phiên bản Windows Pro, Enterprise hoặc Education (Không có trên Windows Home).
+  * Cấu hình chia sẻ mạng (Virtual Switch) khá phức tạp với người mới.
+  * Khi bật Hyper-V, nó có thể gây xung đột làm giảm hiệu năng của các phần mềm ảo hóa khác (như VirtualBox).
+* **Phù hợp cho:** Quản trị viên hệ thống (Sysadmin) chuyên nghiệp, triển khai máy chủ ảo nội bộ hoặc chạy môi trường Docker quy mô lớn.
+
+## 2.Cài đặt docker compose
+
+### Bước 1: Cài đặt tính năng Containers của Windows Server
+Mở **PowerShell** với quyền **Administrator** và chạy lệnh cài đặt tính năng Containers:
+```powershell
+Install-WindowsFeature -Name Containers
+```
+Sau khi cài đặt xong, **bắt buộc phải khởi động lại máy chủ** để hệ thống áp dụng thay đổi:
+```powershell
+Restart-Computer -Force
+```
+
+---
+
+## Bước 2: Tải và cài đặt Docker Engine thủ công
+Sau khi máy ảo khởi động lại, mở lại PowerShell và chạy lần lượt các lệnh:
+
+1. **Tải gói nén Docker Engine chính thức:**
+   ```powershell
+   Invoke-WebRequest -UseBasicParsing -Uri "https://download.docker.com/win/static/stable/x86_64/docker-24.0.7.zip" -OutFile "$env:TEMP\docker.zip"
+   ```
+
+2. **Giải nén vào thư mục Program Files:**
+   ```powershell
+   Expand-Archive -Path "$env:TEMP\docker.zip" -DestinationPath "$env:ProgramFiles" -Force
+   ```
+
+3. **Thêm thư mục Docker vào biến môi trường hệ thống (PATH):**
+   ```powershell
+   [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:ProgramFiles\docker", [EnvironmentVariableTarget]::Machine)
+   $env:Path += ";$env:ProgramFiles\docker"
+   ```
+
+4. **Đăng ký Docker làm Windows Service và khởi động dịch vụ:**
+   ```powershell
+   dockerd --register-service
+   Start-Service docker
+   ```
+
+---
+
+## Bước 3: Cài đặt Docker Compose Plugin
+1. **Tạo thư mục chứa plugin cho Docker:**
+   ```powershell
+   New-Item -Type Directory -Force "$HOME\.docker\cli-plugins"
+   ```
+
+2. **Tải file thực thi Docker Compose từ GitHub Releases:**
+   ```powershell
+   Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-windows-x86_64.exe" -OutFile "$HOME\.docker\cli-plugins\docker-compose.exe"
+   ```
+
+---
+
+## Bước 4: Kiểm tra kết quả
+Chạy lệnh kiểm tra phiên bản Docker Compose:
+```powershell
+docker compose version
+```
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/c3ab0703-297d-4581-a10f-bd160aeabc3d" />
 
