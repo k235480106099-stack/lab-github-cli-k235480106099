@@ -197,7 +197,7 @@ b5. **Tính số mũ bí mật $d$ (Private Exponent):**
    * **Mã hóa:** $C = 65^{17} \pmod{3233} = 2790$.
    * **Giải mã:** $M = 2790^{2753} \pmod{3233} = 65$ *(Trùng khớp với bản gốc)*.
 
-### c. Trình bày các mô hình áp dụng thuật toán RSA
+## c. Trình bày các mô hình áp dụng thuật toán RSA
 
 Dựa vào việc sử dụng khóa nào để mã hóa, RSA được ứng dụng trong 3 mô hình chính:
 
@@ -220,7 +220,7 @@ Dựa vào việc sử dụng khóa nào để mã hóa, RSA được ứng dụ
 
 ---
 
-### d. So sánh thời gian mã hóa/giải mã của RSA với AES
+## d. So sánh thời gian mã hóa/giải mã của RSA với AES
 
 | Tiêu chí | Thuật toán AES (Đối xứng) | Thuật toán RSA (Bất đối xứng) |
 | :--- | :--- | :--- |
@@ -230,7 +230,7 @@ Dựa vào việc sử dụng khóa nào để mã hóa, RSA được ứng dụ
 
 ---
 
-### e. Mô hình kết hợp sức mạnh của RSA và AES (Hybrid Encryption)
+## e. Mô hình kết hợp sức mạnh của RSA và AES (Hybrid Encryption)
 
 Thuật toán AES mã hóa nhanh nhưng gặp khó khăn khi gửi khóa bí mật qua mạng internet (dễ bị bắt trộm khóa). RSA giải quyết được việc chia sẻ khóa an toàn nhưng lại quá chậm để mã hóa file. Do đó, trong thực tế (như giao thức HTTPS, SSL/TLS), người ta luôn kết hợp điểm mạnh của cả hai.
 
@@ -245,3 +245,10 @@ Thuật toán AES mã hóa nhanh nhưng gặp khó khăn khi gửi khóa bí m�
 ##### 1.2. Quá trình giải mã (Phía người nhận)
 1. **Giải cứu khóa AES:** Người nhận dùng Khóa bí mật (Private Key) RSA của mình để mở khóa `[Khóa AES đã được mã hóa bằng RSA]`, từ đó khôi phục lại được "Khóa bí mật AES".
 2. **Mở khóa dữ liệu:** Dùng khóa AES vừa lấy được ở trên để giải mã `[Dữ liệu đã mã hóa bằng AES]`, thu được nội dung bản rõ ban đầu với tốc độ cao.
+---
+
+# Môn Lập trình web
+
+## Bài tập 1:
+
+
