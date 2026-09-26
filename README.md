@@ -6,7 +6,9 @@
 
 ---
 
-## Tìm hiểu thuật toán mã hóa hiện đại DES và AES
+# Môn An toàn và bảo mật thông tin.
+
+## a.Tìm hiểu thuật toán mã hóa hiện đại DES và AES
 
 ### 1. Thuật toán mã hóa DES (Data Encryption Standard)
 
@@ -73,3 +75,60 @@ $$\text{AddRoundKey} \rightarrow \text{InvShiftRows} \rightarrow \text{InvSubByt
 ### Yêu cầu cài đặt thư viện
 ```bash
 pip install pycryptodome
+
+**Chương trình mã hóa và giải mã văn bản bằng AES (chế độ CBC)**
+'''bash
+import base64
+import os
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+
+
+class AESCipher:
+
+  def __init__(self, key: str):
+    # Khóa được chuẩn hóa về 32 bytes cho AES-256
+    self.key = key.encode('utf-8').ljust(32, b'\0')[:32]
+
+  def encrypt(self, raw_text: str) -> str:
+    # Tạo IV (Initialization Vector) ngẫu nhiên 16 bytes
+    iv = os.urandom(16)
+    cipher = AES.new(self.key, AES.MODE_CBC, iv)
+
+    # Đệm dữ liệu (padding) theo chuẩn PKCS7 và mã hóa
+    padded_data = pad(raw_text.encode('utf-8'), AES.block_size)
+    encrypted_bytes = cipher.encrypt(padded_data)
+
+    # Ghép IV + Chuỗi mã hóa và chuyển sang dạng Base64
+    return base64.b64encode(iv + encrypted_bytes).decode('utf-8')
+
+  def decrypt(self, enc_text: str) -> str:
+    # Giải mã từ Base64
+    data = base64.b64decode(enc_text)
+    iv = data[:16]  # Lấy 16 bytes đầu làm IV
+    encrypted_bytes = data[16:]
+
+    cipher = AES.new(self.key, AES.MODE_CBC, iv)
+    decrypted_padded = cipher.decrypt(encrypted_bytes)
+
+    # Loại bỏ padding và trả về văn bản gốc
+    return unpad(decrypted_padded, AES.block_size).decode('utf-8')
+
+
+# --- Demo chạy thử chương trình ---
+if __name__ == '__main__':
+  secret_key = 'MySecretKey123'
+  message = 'Phạm Thanh Sơn - MSSV: 235480106099'
+
+  aes = AESCipher(secret_key)
+
+  # Mã hóa
+  encrypted = aes.encrypt(message)
+  print(f'Văn bản gốc    : {message}')
+  print(f'Bản mã (Base64): {encrypted}')
+
+  # Giải mã
+  decrypted = aes.decrypt(encrypted)
+  print(f'Bản giải mã    : {decrypted}')
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/fea26049-9291-4b72-9320-0ad528f08876" />
