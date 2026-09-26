@@ -131,3 +131,66 @@ if __name__ == '__main__':
 ```
 
 <img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/fea26049-9291-4b72-9320-0ad528f08876" />
+
+---
+
+## b. Thuật toán mã hóa bất đối xứng RSA
+
+### 1. Khái niệm & Tổng quan
+RSA (được đặt tên theo ba tác giả Rivest, Shamir và Adleman) là thuật toán mã hóa bất đối xứng (khóa công khai) phổ biến nhất hiện nay.
+* **Nguyên lý độ an toàn:** Dựa trên độ khó tính toán của bài toán **phân tích một số nguyên cực lớn thành tích của hai số nguyên tố**.
+* **Đặc điểm:** Sử dụng một cặp khóa riêng biệt:
+  * **Khóa công khai (Public Key):** Bất kỳ ai cũng có thể biết, dùng để **mã hóa** thông điệp hoặc **kiểm tra** chữ ký số.
+  * **Khóa bí mật (Private Key):** Chỉ người sở hữu giữ bí mật, dùng để **giải mã** thông điệp hoặc **tạo** chữ ký số.
+
+---
+
+### 2. Nguyên lý sinh cặp khóa (Key Generation)
+
+Quy trình sinh cặp khóa công khai $(e, n)$ và bí mật $(d, n)$ trải qua 5 bước toán học sau:
+
+b1. **Chọn hai số nguyên tố lớn ngẫu nhiên:** Chọn $p$ và $q$ ($p \neq q$).
+b2. **Tính tích Modulus $n$:**
+   $$n = p \times q$$
+   *(Độ dài bit của $n$ chính là độ dài của khóa RSA, ví dụ: 2048-bit hoặc 4096-bit).*
+b3. **Tính hàm số Euler $\phi(n)$:**
+   $$\phi(n) = (p - 1)(q - 1)$$
+b4. **Chọn số mũ công khai $e$ (Public Exponent):**
+   * Chọn $e$ sao cho $1 < e < \phi(n)$ và $e$ nguyên tố cùng nhau với $\phi(n)$ (tức $\gcd(e, \phi(n)) = 1$).
+   * *(Trong thực tế, người ta thường chọn giá trị chuẩn $e = 65537$).*
+b5. **Tính số mũ bí mật $d$ (Private Exponent):**
+   * Tính $d$ là nghịch đảo nhân modular của $e$ theo modulo $\phi(n)$, thỏa mãn:
+     $$d \times e \equiv 1 \pmod{\phi(n)}$$
+   * *(Dùng thuật toán Euclid mở rộng để tìm $d$).*
+
+**Kết quả cặp khóa:**
+* **Khóa công khai (Public Key):** $PU = \{e, n\}$
+* **Khóa bí mật (Private Key):** $PR = \{d, n\}$
+
+---
+
+### 3. Quy trình Mã hóa và Giải mã
+
+* **Quy trình Mã hóa (Encryption):**
+  * Muốn gửi bản rõ $M$ ($M < n$), người gửi dùng **Khóa công khai** $\{e, n\}$ của người nhận để tính bản mã $C$:
+    $$C = M^e \pmod n$$
+
+* **Quy trình Giải mã (Decryption):**
+  * Người nhận dùng **Khóa bí mật** $\{d, n\}$ của mình để khôi phục lại bản rõ $M$ từ bản mã $C$:
+    $$M = C^d \pmod n$$
+
+---
+
+### 4. Ví dụ minh họa bằng số nhỏ
+
+4.1. **Sinh khóa:**
+   * Chọn $p = 61$ và $q = 53$.
+   * Tính $n = 61 \times 53 = 3233$.
+   * Tính $\phi(n) = (61 - 1) \times (53 - 1) = 60 \times 52 = 3120$.
+   * Chọn $e = 17$ (thỏa mãn $\gcd(17, 3120) = 1$).
+   * Tính $d$: $17 \times d \equiv 1 \pmod{3120} \Rightarrow d = 2753$.
+   * **Khóa public:** $\{17, 3233\}$, **Khóa private:** $\{2753, 3233\}$.
+
+4.2. **Mã hóa & Giải mã bản rõ $M = 65$:**
+   * **Mã hóa:** $C = 65^{17} \pmod{3233} = 2790$.
+   * **Giải mã:** $M = 2790^{2753} \pmod{3233} = 65$ *(Trùng khớp với bản gốc)*.
