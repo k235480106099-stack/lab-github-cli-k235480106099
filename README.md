@@ -251,107 +251,249 @@ Thuật toán AES mã hóa nhanh nhưng gặp khó khăn khi gửi khóa bí m�
 
 ## Bài tập 1:
 
-## 1. Các công cụ giả lập và ảo hóa Linux OS trên Windows
+### 1. Các công cụ giả lập và ảo hóa Linux OS trên Windows
 
 Để chạy hệ điều hành Linux trên môi trường máy chủ (host) là Windows, chúng ta có 4 công cụ phổ biến nhất hiện nay, mỗi công cụ có cơ chế hoạt động và đối tượng sử dụng khác nhau.
 
 ### 1.1. WSL (Windows Subsystem for Linux)
-* **Khái niệm:** Là một tính năng tích hợp sẵn của Microsoft cho phép chạy môi trường Linux nguyên bản trực tiếp trên Windows mà không cần khởi động máy ảo truyền thống. WSL 2 hiện nay sử dụng một nhân (Kernel) Linux thực sự.
-* **Ưu điểm:**
-  * Khởi động cực kỳ nhanh (gần như tức thì).
-  * Tiêu tốn rất ít tài nguyên phần cứng (RAM, CPU) so với máy ảo.
-  * Tích hợp hoàn hảo với hệ thống file của Windows (có thể mở file Linux bằng VS Code trên Windows dễ dàng).
-* **Nhược điểm:** Mặc định chỉ dùng giao diện dòng lệnh (CLI). Việc giả lập giao diện đồ họa (GUI) dù có hỗ trợ (qua WSLg) nhưng không trọn vẹn và mượt mà như máy ảo thật.
-* **Phù hợp cho:** Lập trình viên, kỹ sư phần mềm chỉ cần môi trường dòng lệnh Linux để code, chạy Docker hoặc deploy web.
+
+Khái niệm: Là một tính năng tích hợp sẵn của Microsoft cho phép chạy môi trường Linux nguyên bản trực tiếp trên Windows mà không cần khởi động máy ảo truyền thống. WSL 2 hiện nay sử dụng một nhân (Kernel) Linux thực sự.
+Ưu điểm:
+Khởi động cực kỳ nhanh (gần như tức thì).
+Tiêu tốn rất ít tài nguyên phần cứng (RAM, CPU) so với máy ảo.
+Tích hợp hoàn hảo với hệ thống file của Windows (có thể mở file Linux bằng VS Code trên Windows dễ dàng).
+Nhược điểm: Mặc định chỉ dùng giao diện dòng lệnh (CLI). Việc giả lập giao diện đồ họa (GUI) dù có hỗ trợ (qua WSLg) nhưng không trọn vẹn và mượt mà như máy ảo thật.
+Phù hợp cho: Lập trình viên, kỹ sư phần mềm chỉ cần môi trường dòng lệnh Linux để code, chạy Docker hoặc deploy web.
 
 ### 1.2. VMware (VMware Workstation / Player)
-* **Khái niệm:** Là phần mềm ảo hóa (Type 2 Hypervisor) chuyên nghiệp và lâu đời, cho phép tạo một "máy tính ảo" hoàn chỉnh nằm bên trong máy tính thật.
-* **Ưu điểm:**
-  * Hiệu suất tối ưu cực tốt, đặc biệt là xử lý đồ họa (GUI) của Linux rất mượt mà.
-  * Tính năng **Snapshot** mạnh mẽ (lưu lại trạng thái máy ảo để khôi phục nhanh khi hệ thống bị lỗi).
-  * Khả năng giả lập mạng (NAT, Bridge) rất ổn định và chuyên sâu.
-* **Nhược điểm:** Tiêu tốn nhiều tài nguyên của máy thật (phải cấp phát RAM và Ổ cứng cố định). Bản Workstation Pro yêu cầu trả phí (dù bản Player miễn phí).
-* **Phù hợp cho:** Người dùng muốn trải nghiệm trọn vẹn giao diện Desktop của Linux (Ubuntu, Kali Linux...), sinh viên học quản trị mạng, an toàn thông tin.
+
+Khái niệm: Là phần mềm ảo hóa (Type 2 Hypervisor) chuyên nghiệp và lâu đời, cho phép tạo một "máy tính ảo" hoàn chỉnh nằm bên trong máy tính thật.
+Ưu điểm:
+Hiệu suất tối ưu cực tốt, đặc biệt là xử lý đồ họa (GUI) của Linux rất mượt mà.
+Tính năng Snapshot mạnh mẽ (lưu lại trạng thái máy ảo để khôi phục nhanh khi hệ thống bị lỗi).
+Khả năng giả lập mạng (NAT, Bridge) rất ổn định và chuyên sâu.
+Nhược điểm: Tiêu tốn nhiều tài nguyên của máy thật (phải cấp phát RAM và Ổ cứng cố định). Bản Workstation Pro yêu cầu trả phí (dù bản Player miễn phí).
+Phù hợp cho: Người dùng muốn trải nghiệm trọn vẹn giao diện Desktop của Linux (Ubuntu, Kali Linux...), sinh viên học quản trị mạng, an toàn thông tin.
 
 ### 1.3. VirtualBox (Oracle)
-* **Khái niệm:** Tương tự như VMware, VirtualBox là phần mềm ảo hóa máy tính (Type 2) nhưng là nền tảng mã nguồn mở.
-* **Ưu điểm:**
-  * Hoàn toàn **miễn phí** 100% cho mọi mục đích sử dụng.
-  * Hỗ trợ đa nền tảng, cài đặt dễ dàng, giao diện thân thiện với người mới.
-  * Cộng đồng sử dụng lớn, dễ dàng tìm kiếm hướng dẫn sửa lỗi trên mạng.
-* **Nhược điểm:** Hiệu năng đôi khi không mượt mà bằng VMware, đặc biệt ở khả năng xử lý đồ họa 3D và các tính năng mở rộng thường hay gặp lỗi vặt.
-* **Phù hợp cho:** Sinh viên, người mới bắt đầu học hệ điều hành Linux cần một máy ảo miễn phí, dễ dùng để vọc vạch.
+
+Khái niệm: Tương tự như VMware, VirtualBox là phần mềm ảo hóa máy tính (Type 2) nhưng là nền tảng mã nguồn mở.
+Ưu điểm:
+Hoàn toàn miễn phí 100% cho mọi mục đích sử dụng.
+Hỗ trợ đa nền tảng, cài đặt dễ dàng, giao diện thân thiện với người mới.
+Cộng đồng sử dụng lớn, dễ dàng tìm kiếm hướng dẫn sửa lỗi trên mạng.
+Nhược điểm: Hiệu năng đôi khi không mượt mà bằng VMware, đặc biệt ở khả năng xử lý đồ họa 3D và các tính năng mở rộng thường hay gặp lỗi vặt.
+Phù hợp cho: Sinh viên, người mới bắt đầu học hệ điều hành Linux cần một máy ảo miễn phí, dễ dùng để vọc vạch. 
 
 ### 1.4. Hyper-V
-* **Khái niệm:** Là trình ảo hóa lõi cấp thấp (Type 1 Hypervisor) do chính Microsoft phát triển, được tích hợp sâu vào hệ điều hành Windows.
-* **Ưu điểm:**
-  * Chạy gần sát với phần cứng vật lý nên mang lại hiệu năng cao và độ trễ thấp.
-  * Miễn phí và có sẵn trên Windows, không cần cài thêm phần mềm của bên thứ 3.
-* **Nhược điểm:** 
-  * Chỉ có mặt trên các phiên bản Windows Pro, Enterprise hoặc Education (Không có trên Windows Home).
-  * Cấu hình chia sẻ mạng (Virtual Switch) khá phức tạp với người mới.
-  * Khi bật Hyper-V, nó có thể gây xung đột làm giảm hiệu năng của các phần mềm ảo hóa khác (như VirtualBox).
-* **Phù hợp cho:** Quản trị viên hệ thống (Sysadmin) chuyên nghiệp, triển khai máy chủ ảo nội bộ hoặc chạy môi trường Docker quy mô lớn.
 
-## 2.Cài đặt docker compose
+Khái niệm: Là trình ảo hóa lõi cấp thấp (Type 1 Hypervisor) do chính Microsoft phát triển, được tích hợp sâu vào hệ điều hành Windows.
+Ưu điểm:
+Chạy gần sát với phần cứng vật lý nên mang lại hiệu năng cao và độ trễ thấp.
+Miễn phí và có sẵn trên Windows, không cần cài thêm phần mềm của bên thứ 3.
+Nhược điểm:
+Chỉ có mặt trên các phiên bản Windows Pro, Enterprise hoặc Education (Không có trên Windows Home).
+Cấu hình chia sẻ mạng (Virtual Switch) khá phức tạp với người mới.
+Khi bật Hyper-V, nó có thể gây xung đột làm giảm hiệu năng của các phần mềm ảo hóa khác (như VirtualBox).
+Phù hợp cho: Quản trị viên hệ thống (Sysadmin) chuyên nghiệp, triển khai máy chủ ảo nội bộ hoặc chạy môi trường Docker quy mô lớn.
 
-### Bước 1: Cài đặt tính năng Containers của Windows Server
-Mở **PowerShell** với quyền **Administrator** và chạy lệnh cài đặt tính năng Containers:
-```powershell
-Install-WindowsFeature -Name Containers
+Công cụ giả lập được sử dụng trong bài tập này: VMware Workstation, cài hệ điều hành Ubuntu 26.04.1 LTS (Desktop, 64-bit).
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/9d9f54b8-1674-4ac2-970f-1fe0f32cd7e2" />
+
+Hình: Máy ảo Ubuntu 26.04.1 LTS chạy trên VMware Workstation, sẵn sàng thao tác qua Terminal.
+
+### 2. Cài đặt Docker Compose trên Ubuntu (máy ảo VMware)
+
+Bước 1: Cập nhật hệ thống và cài gói cần thiết
+bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y ca-certificates curl gnupg
+Bước 2: Cài Docker Engine bằng script chính thức
+bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+Bước 3: Cấp quyền chạy Docker không cần sudo
+
+```bash
+sudo usermod -aG docker $USER
 ```
-Sau khi cài đặt xong, **bắt buộc phải khởi động lại máy chủ** để hệ thống áp dụng thay đổi:
-```powershell
-Restart-Computer -Force
-```
 
----
+Sau khi thêm user vào nhóm docker, cần đăng xuất và đăng nhập lại (hoặc khởi động lại máy) để quyền có hiệu lực.
 
-## Bước 2: Tải và cài đặt Docker Engine thủ công
-Sau khi máy ảo khởi động lại, mở lại PowerShell và chạy lần lượt các lệnh:
-
-1. **Tải gói nén Docker Engine chính thức:**
-   ```powershell
-   Invoke-WebRequest -UseBasicParsing -Uri "https://download.docker.com/win/static/stable/x86_64/docker-24.0.7.zip" -OutFile "$env:TEMP\docker.zip"
-   ```
-
-2. **Giải nén vào thư mục Program Files:**
-   ```powershell
-   Expand-Archive -Path "$env:TEMP\docker.zip" -DestinationPath "$env:ProgramFiles" -Force
-   ```
-
-3. **Thêm thư mục Docker vào biến môi trường hệ thống (PATH):**
-   ```powershell
-   [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:ProgramFiles\docker", [EnvironmentVariableTarget]::Machine)
-   $env:Path += ";$env:ProgramFiles\docker"
-   ```
-
-4. **Đăng ký Docker làm Windows Service và khởi động dịch vụ:**
-   ```powershell
-   dockerd --register-service
-   Start-Service docker
-   ```
-
----
-
-## Bước 3: Cài đặt Docker Compose Plugin
-1. **Tạo thư mục chứa plugin cho Docker:**
-   ```powershell
-   New-Item -Type Directory -Force "$HOME\.docker\cli-plugins"
-   ```
-
-2. **Tải file thực thi Docker Compose từ GitHub Releases:**
-   ```powershell
-   Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-windows-x86_64.exe" -OutFile "$HOME\.docker\cli-plugins\docker-compose.exe"
-   ```
-
----
-
-## Bước 4: Kiểm tra kết quả
-Chạy lệnh kiểm tra phiên bản Docker Compose:
-```powershell
+Bước 4: Kiểm tra kết quả cài đặt
+```bash
+docker --version
 docker compose version
 ```
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/9ff348b3-2af0-4f71-8946-efe951008b11" />
 
-<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/c3ab0703-297d-4581-a10f-bd160aeabc3d" />
+Hình: Docker Engine và Docker Compose đã cài đặt thành công trên Ubuntu.
 
+### 3. Cài đặt các dịch vụ trên Docker Compose
+
+Triển khai đủ 5 dịch vụ theo yêu cầu: nginx, nodered, mariadb, phpmyadmin, cloudflared.
+
+### 3.1. Cấu trúc thư mục project
+
+~/lab-web/
+├── docker-compose.yml
+└── nginx/
+    ├── conf.d/
+    │   ├── site1.conf
+    │   └── site2.conf
+    └── html/
+        ├── site1/
+        │   └── index.html
+        └── site2/
+            └── index.html
+
+### 3.2. File docker-compose.yml
+
+```bash
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/html:/usr/share/nginx/html
+    depends_on:
+      - phpmyadmin
+      - nodered
+    networks:
+      - weblab
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass123
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - weblab
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    depends_on:
+      - mariadb
+    networks:
+      - weblab
+
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered
+    restart: always
+    volumes:
+      - nodered_data:/data
+    networks:
+      - weblab
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: always
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: "<TOKEN_TUNNEL_CLOUDFLARE_CUA_BAN>"
+    networks:
+      - weblab
+
+networks:
+  weblab:
+    driver: bridge
+
+volumes:
+  db_data:
+  nodered_data:
+```
+
+### 3.3. Cấu hình Cloudflare Tunnel (dùng domain thật)
+
+Domain sử dụng trong bài: phamson05.id.vn (đăng ký và quản lý qua Cloudflare).
+
+Các bước thực hiện:
+
+Đăng nhập Cloudflare Zero Trust → Networks → Tunnels → Create a tunnel
+Chọn loại kết nối Cloudflared, đặt tên tunnel
+Lấy Token của tunnel (hiển thị khi chọn môi trường Docker) và dán vào biến TUNNEL_TOKEN trong docker-compose.yml
+Vào tab Routes (Published application), thêm 2 route:
+Subdomain	Domain	Service
+site1	phamson05.id.vn	http://nginx:80
+site2	phamson05.id.vn	http://nginx:80
+
+Cloudflare tự động tạo DNS record trỏ về tunnel, không cần cấu hình DNS thủ công.
+
+### 3.4. Khởi động và kiểm tra các container
+
+```bash
+cd ~/lab-web
+docker compose up -d
+docker compose ps
+```
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/7e27eb99-6740-4ff9-a1ae-d4f8687eb539" />
+
+Hình: Cả 5 container (nginx, mariadb, phpmyadmin, nodered, cloudflared) đều ở trạng thái Up/Running.
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/f1e423db-28c7-4437-97ff-2ef178996a0d" />
+
+Hình: Cloudflare Tunnel ở trạng thái "Khỏe mạnh" (Healthy), 1 bản sao hoạt động, 2 tuyến đường (routes) đã cấu hình trỏ tới site1.phamson05.id.vn và site2.phamson05.id.vn.
+
+### 4. Cấu hình Nginx chạy 2 website với 2 domain khác nhau
+
+### 4.1. File nginx/conf.d/site1.conf
+
+```bash
+server {
+    listen 80;
+    server_name site1.phamson05.id.vn;
+
+    root /usr/share/nginx/html/site1;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+### 4.2. File nginx/conf.d/site2.conf
+
+```bash
+server {
+    listen 80;
+    server_name site2.phamson05.id.vn;
+
+    root /usr/share/nginx/html/site2;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+Mỗi domain trỏ tới một thư mục root riêng (site1 / site2); Nginx dựa vào header Host (giá trị server_name) để phân biệt và trả về đúng nội dung cho từng domain.
+
+### 4.3. Kết quả kiểm tra
+
+<img width="1456" height="819" alt="image" src="https://github.com/user-attachments/assets/d7e1850b-1930-4914-918a-9136ce19873e" />
+
+Hình: Truy cập site1.phamson05.id.vn hiển thị đúng nội dung "Đây là Website 1".
+
+<img width="1456" height="819" alt="image" src="https://github.com/user-attachments/assets/5deb4510-a3ed-4688-9935-1fcf4db5eab7" />
+
+Hình: Truy cập site2.phamson05.id.vn hiển thị đúng nội dung "Đây là Website 2".
+
+Hai domain khác nhau trả về đúng nội dung tương ứng, xác nhận Nginx đã cấu hình thành công 2 virtual host trên cùng một cổng 80, thông qua Cloudflare Tunnel với domain thật.
