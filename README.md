@@ -500,3 +500,167 @@ Hình: Truy cập site1.phamson05.id.vn hiển thị đúng nội dung "Đây l�
 Hình: Truy cập site2.phamson05.id.vn hiển thị đúng nội dung "Đây là Website 2".
 
 Hai domain khác nhau trả về đúng nội dung tương ứng, xác nhận Nginx đã cấu hình thành công 2 virtual host trên cùng một cổng 80, thông qua Cloudflare Tunnel với domain thật.
+
+## Bài tập 2:
+
+## 1. Thiết lập API endpoint trên Node-RED
+- Tạo luồng (Flow) gồm 3 node:
+  + Node [get] /api/quy-lop: Nhận request GET tại đường dẫn /api/quy-lop
+  + Node function: Khởi tạo nội dung JSON phản hồi
+  + Node http response: Trả dữ liệu về client
+
+- Mã nguồn trong Node function:
+
+```bash
+msg.payload = {
+    "ok": 1,
+    "msg": "thành công",
+    "dssv": [
+        { "name": "Phạm Thanh Sơn", "money": 500 },
+        { "name": "Cốp", "money": 123 },
+        { "name": "David", "money": 456 }
+    ]
+};
+return msg;
+```
+
+## 2. Cấu hình Nginx Reverse Proxy
+
+Chỉnh sửa file cấu hình Nginx (~/lab-web/nginx/conf.d/site1.conf) để định tuyến yêu cầu từ /api/ sang dịch vụ Node-RED (port 1880):
+
+```bash
+server {
+    listen 80;
+    server_name site1.phamson05.id.vn;
+
+    root /usr/share/nginx/html/site1;
+    index index.html;
+
+    location / {
+        try_files $uri$uri/ =404;
+    }
+
+    location /api/ {
+        proxy_pass http://nodered:1880/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+
+Lệnh reload Nginx trong Ubuntu Terminal:
+
+```bash
+docker exec -it nginx nginx -s reload
+```
+
+## 3. Mã nguồn Frontend (index.html)
+
+Nội dung file HTML/JS đặt tại ~/lab-web/nginx/html/site1/index.html:
+
+```bash
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập 2 - Gọi API Node-RED</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f6f9;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+        h2 { color: #333; margin-top: 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th { background-color: #007bff; color: white; }
+        .status { font-weight: bold; color: #28a745; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Danh Sách Đóng Quỹ Lớp</h2>
+    <p>Trạng thái API: <span id="status" class="status">Đang tải dữ liệu...</span></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên Sinh Viên</th>
+                <th>Số Tiền (k)</th>
+            </tr>
+        </thead>
+        <tbody id="student-list">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    fetch('/api/quy-lop')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Kết nối API thất bại');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.ok === 1) {
+                document.getElementById('status').innerText = data.msg;
+                
+                const tbody = document.getElementById('student-list');
+                tbody.innerHTML = '';
+
+                data.dssv.forEach((sv, index) => {
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${sv.name}</td>
+                            <td>${sv.money}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi:', error);
+            const statusElem = document.getElementById('status');
+            statusElem.innerText = 'Không thể lấy dữ liệu từ API!';
+            statusElem.style.color = '#dc3545';
+        });
+</script>
+
+</body>
+</html>
+```
+
+## KẾT QUẢ ĐẠT ĐƯỢC
+
+**1.** Trang web https://site1.phamson05.id.vn load thành công giao diện danh sách đóng quỹ lớp.
+
+**2.** Dữ liệu bảng sinh viên (Phạm Thanh Sơn, Cốp, David) cùng số tiền quỹ được load tự động qua Javascript fetch('/api/quy-lop') không bị chặn lỗi CORS.
+
+**3.** Hệ thống hoạt động mượt mà nhờ Nginx đóng vai trò Reverse Proxy xử lý toàn bộ lưu lượng cổng 80 và chuyển tiếp nội bộ sang Node-RED.
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/e5600e65-557b-456b-8876-1de1192283fc" />
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/1326c56d-cfa1-4bf9-8ef9-d70bfa11fd72" />
+
