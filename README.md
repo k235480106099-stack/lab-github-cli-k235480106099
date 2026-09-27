@@ -336,6 +336,9 @@ Triển khai đủ 5 dịch vụ theo yêu cầu: nginx, nodered, mariadb, phpmy
 
 ### 3.1. Cấu trúc thư mục project
 
+### 3.1. Cấu trúc thư mục project
+
+```text
 ~/lab-web/
 ├── docker-compose.yml
 └── nginx/
